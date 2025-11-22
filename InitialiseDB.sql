@@ -60,33 +60,34 @@ CREATE TABLE School.Department (
 CREATE TABLE Course.Course (
     CourseCode   VARCHAR(10) NOT NULL PRIMARY KEY,      -- e.g. 'CS100'
     CourseTitle        VARCHAR(100) NOT NULL,
-    TotalCredits      TINYINT     NOT NULL
+    TotalCredits      TINYINT     NOT NULL,
+    Capacity          SMALLINT NOT NULL
 );
 
 -- STUDENTS
 CREATE TABLE Std.Student (
-    StudentID             VARCHAR(30)  NOT NULL PRIMARY KEY,     -- e.g. '2023CS1'
-    fname                 VARCHAR(50)  NOT NULL,
-    lname                 VARCHAR(50)  NOT NULL,
-    email                 VARCHAR(100) NOT NULL UNIQUE,
-    year_joined           SMALLINT     NOT NULL,                 -- store year, e.g. 2023
+    StudentID             VARCHAR(30)  NOT NULL PRIMARY KEY,     -- e.g. ''
+    FName                 VARCHAR(50)  NOT NULL,
+    LName                 VARCHAR(50)  NOT NULL,
+    Email                 VARCHAR(100) NOT NULL UNIQUE,
     SchoolID              VARCHAR(30)  NOT NULL,
     DepartmentID          VARCHAR(30)  NOT NULL,
-    current_academic_year VARCHAR(10)  NULL,                     -- FRESHMAN/SOPH/JUNIOR/SENIOR
+    GraduationYear        SMALLINT  NOT NULL,
+    CurrentAcademicYear VARCHAR(10)  NULL,                     -- FRESHMAN/SOPH/JUNIOR/SENIOR
     CONSTRAINT fk_student_school
         FOREIGN KEY (SchoolID) REFERENCES School.School(SchoolID),
     CONSTRAINT fk_student_department
         FOREIGN KEY (DepartmentID) REFERENCES Dept.Department(DepartmentID),
     CONSTRAINT chk_student_acad_year
         CHECK (
-            current_academic_year IN ('FRESHMAN','SOPHOMORE','JUNIOR','SENIOR')
+            current_academic_year IN ('FRESHMAN','SOPHOMORE','JUNIOR','SENIOR', 'ALUMNI')
             OR current_academic_year IS NULL
         )
 );
 
 -- StudentID helper table
 -- StudentID = year_joined + DepartmentID + last_number;
--- e.g. '2023CS1', '2023CS2', '2024MGS1', '2021ACF13'
+-- e.g. '2023CS1', '2023CS2', '2024MGS1', '2021ACF13' 
 CREATE TABLE Std.StudentIdSequence (
     YearJoined SMALLINT    NOT NULL,
     DepartmentID VARCHAR(30) NOT NULL,
@@ -100,9 +101,9 @@ CREATE TABLE Std.StudentIdSequence (
 -- INSTRUCTORS
 CREATE TABLE Inst.Instructor (
     InstructorID VARCHAR(30) NOT NULL PRIMARY KEY, -- eg. CS1, MGS10
-    fname        VARCHAR(50) NOT NULL,
-    lname        VARCHAR(50) NOT NULL,
-    email        VARCHAR(100) NOT NULL UNIQUE,     -- eg. fname.lname.InstructorID@lums.edu.pk
+    FName        VARCHAR(50) NOT NULL,
+    LName        VARCHAR(50) NOT NULL,
+    Email        VARCHAR(100) NOT NULL UNIQUE,     -- eg. fname.lname.InstructorID@lums.edu.pk
     DepartmentID   VARCHAR(30) NOT NULL,
     CONSTRAINT fk_instructor_dept
         FOREIGN KEY (DepartmentID) REFERENCES Dept.Department(DepartmentID)
