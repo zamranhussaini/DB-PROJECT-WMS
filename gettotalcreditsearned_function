@@ -8,7 +8,7 @@ BEGIN
     FROM Std.Enrollment E
     JOIN Course.Course C ON E.CourseCode = C.CourseCode
     WHERE E.StudentID = @StudentID
-    AND E.Completed = 1; -- Only sum credits for courses marked 'Completed'
+    AND E.Completed = 1; -- only sum credits for courses marked as completed
 
     --handle null if a student hasnt finished any courses
     IF @TotalCredits IS NULL 
