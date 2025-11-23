@@ -1,0 +1,30 @@
+USE WheresMyScheduleDB;
+GO
+
+--create auditlog table to keep track
+CREATE TABLE AuditLog (
+    AuditID INT IDENTITY(1,1) PRIMARY KEY,
+    ActionType VARCHAR(50),
+    TableName VARCHAR(50),
+    RecordID VARCHAR(50),
+    ActionTimestamp DATETIME DEFAULT GETDATE(),
+    Details VARCHAR(255)
+);
+GO
+
+-- add isactive to course.course for the soft delete trigger (this will eventually be added to initialiseDB)
+ALTER TABLE Course.Course 
+ADD IsActive BIT NOT NULL DEFAULT 1;
+GO
+
+
+--isforced flag and grade are added to std.enrollment
+--grade is needed for GPA calculation
+--isforced is needed for the audit trigger
+ALTER TABLE Std.Enrollment 
+ADD IsForced BIT NOT NULL DEFAULT 0;
+
+--grade will store values like 'A', 'B+', 'C-' etc.
+ALTER TABLE Std.Enrollment 
+ADD Grade VARCHAR(2) NULL;
+GO
