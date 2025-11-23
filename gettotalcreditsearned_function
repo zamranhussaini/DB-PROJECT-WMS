@@ -1,0 +1,19 @@
+CREATE FUNCTION fn_GetTotalCreditsEarned (@StudentID VARCHAR(30))
+RETURNS INT
+AS
+BEGIN
+    DECLARE @TotalCredits INT;
+
+    SELECT @TotalCredits = SUM(C.TotalCredits)
+    FROM Std.Enrollment E
+    JOIN Course.Course C ON E.CourseCode = C.CourseCode
+    WHERE E.StudentID = @StudentID
+    AND E.Completed = 1; -- Only sum credits for courses marked 'Completed'
+
+    --handle null if a student hasnt finished any courses
+    IF @TotalCredits IS NULL 
+        SET @TotalCredits = 0;
+
+    RETURN @TotalCredits;
+END;
+GO
